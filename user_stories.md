@@ -1,28 +1,31 @@
+# 1 - Registration
+
 # User Story Template
 **Title:**
 Account registration
-_As a user, I want to register with my name, username, age, and country so that I can create an account and access the habit tracking features._
+_As a user, I want to register with my name, username, password, age, and country so that I can create an account and access the habit tracking features._
 **Acceptance Criteria:**
-1. Registration form has fields: name, username, age, and country (all required).
-2. Form validates empty fields and invalid age; shows clear error messages.
-3. Successful submit shows confirmation and creates the account.
+1. Registration form has fields: name, username, password, age, and country (all required).
+2. Form validates empty fields; shows clear error messages.
+3. Successful submit creates the account and leads to the home screen.
 **Priority:** High
 **Story Points:** 3
 **Notes:**
 - Keep messages short and clear.
 
+# 2 - Login
 # User Story Template
 **Title:**
 Account login
 _As a user, I want to log in using my username and password so that I can access my account and track my habits._
 **Acceptance Criteria:**
 1. Login requires username and password; both fields validated for emptiness.
-2. On success, user lands on the homepage.
-3. On failure, user sees a simple “Login failed” message.
+2. On success, user lands on the home screen.
+3. On failure, user sees a simple “ِِAll fields are required” message.
 **Priority:** High
 **Story Points:** 3
 **Notes:**
-- Due to security constraints, only the default username/password can log in; registered credentials are not persisted for login.
+- NA.
 
 # User Story Template
 **Title:**
@@ -37,16 +40,15 @@ _As a user, I want to receive a message if I enter the wrong username or passwor
 **Notes:**
 - Use simple language; avoid jargon.
 
----
+# 3 — Homepage
 
 # User Story Template
 **Title:**
 View welcome message
 _As a user, I want to see a personalized welcome message with my name on the homepage, so that I feel recognized and can confirm I am logged into the correct account._
 **Acceptance Criteria:**
-1. Header shows “Welcome, {name}”.
+1. Header shows “{name}”.
 2. Name updates after profile name changes.
-3. If name is missing, show a friendly generic greeting.
 **Priority:** Medium
 **Story Points:** 2
 **Notes:**
@@ -63,30 +65,28 @@ _As a user, I want to see my daily progress for each habit on the homepage, so t
 **Priority:** High
 **Story Points:** 3
 **Notes:**
-- Keep layout readable on mobile.
+- NA
 
 # User Story Template
 **Title:**
 View completed habits
 _As a user, I want to see a section for completed habits on the homepage, so that I can track what I have already achieved._
 **Acceptance Criteria:**
-1. Completed habits appear in a separate list/section.
-2. Items show date/time completed.
-3. If none completed, show a short motivational message.
+Completed habits appear in a separate list/section.
 **Priority:** Medium
 **Story Points:** 2
 **Notes:**
 - Allow quick navigation to habit details.
 
----
+# Exercise 4 — Menu
 
 # User Story Template
 **Title:**
 Access menu options
 _As a user, I want to access a menu with options for configuring my habits, viewing reports, editing my profile, and signing out, so that I can easily navigate to different parts of the app._
 **Acceptance Criteria:**
-1. Menu icon visible on every screen.
-2. Menu shows: Habits, Reports, Profile, Sign out.
+1. Menu icon visible on home screen.
+2. Menu shows: Configure, Profile, Reports, Notifications and Sign out.
 3. Selecting an option navigates to the correct page.
 **Priority:** High
 **Story Points:** 3
@@ -96,7 +96,7 @@ _As a user, I want to access a menu with options for configuring my habits, view
 # User Story Template
 **Title:**
 Navigate to profile
-_As a user, I want to access a menu with options to configure my habits, view reports, edit my profile, and sign out, so that I can easily navigate different parts of the app_
+_As a user, I want to access a menu with options to configure my habits, view reports, edit my profile, configure notifications and sign out, so that I can easily navigate different parts of the app_
 **Acceptance Criteria:**
 1. “Profile” menu item is present and enabled.
 2. Clicking “Profile” opens the profile page.
@@ -117,7 +117,7 @@ _As a user, I want to access the habits page from the menu, so that I can config
 **Priority:** High
 **Story Points:** 3
 **Notes:**
-- Maintain scroll position where possible.
+- NA
 
 # User Story Template
 **Title:**
@@ -132,14 +132,14 @@ _As a user, I want to sign out of my account using an option in the menu, so tha
 **Notes:**
 - Clear any cached sensitive data.
 
----
+# 5 — Profile Page
 
 # User Story Template
 **Title:**
 View personal information
 _As a user, I want to view my saved name, username, age, and country on my profile page, so that I can see the details I provided during registration._
 **Acceptance Criteria:**
-1. Profile page displays name, username, age, and country read-only by default.
+1. Profile page displays name, username, age, and country.
 2. Data matches the stored registration values.
 3. If data is missing, show a helpful placeholder.
 **Priority:** Medium
@@ -162,31 +162,16 @@ _As a user, I want to update my name, username, age, and country on my profile p
 
 # User Story Template
 **Title:**
-Save updated information
-_As a user, I want the changes I make to my profile to be saved, so that my updated details are stored and reflected throughout the app._
-**Acceptance Criteria:**
-1. On save success, show a confirmation message.
-2. Updated data is visible on all relevant pages.
-3. On save error, show a clear retry message.
-**Priority:** High
-**Story Points:** 3
-**Notes:**
-- Consider optimistic UI with rollback on failure.
-
-# User Story Template
-**Title:**
 Update name in header
 _As a user, I want my updated name to be displayed in the app's header after I change it in the profile, so that my changes are immediately visible._
 **Acceptance Criteria:**
-1. Header updates instantly after name is saved.
-2. Refreshing the app keeps the new name.
-3. Long names are truncated gracefully.
+Header updates instantly after name is saved.
 **Priority:** Medium
 **Story Points:** 2
 **Notes:**
-- Ensure accessibility for screen readers.
+- NA
 
----
+# 6 — Habits Page
 
 # User Story Template
 **Title:**
@@ -194,8 +179,7 @@ Add a new habit
 _As a user, I want to add new habits on the details configuration page so that I can manage and update my habits as needed._
 **Acceptance Criteria:**
 1. “Add habit” opens a form with name and optional description/color.
-2. Required fields validated; errors are clear.
-3. On save, the new habit appears in the list.
+2. On save, the new habit appears in the list.
 **Priority:** High
 **Story Points:** 3
 **Notes:**
@@ -207,8 +191,7 @@ Delete a habit
 _As a user, I want to delete existing habits so that I can keep my habits up to date._
 **Acceptance Criteria:**
 1. Each habit has a delete option.
-2. Delete requires confirmation.
-3. On delete, the habit is removed from the list.
+2. On delete, the habit is removed from the list.
 **Priority:** Medium
 **Story Points:** 2
 **Notes:**
@@ -219,7 +202,7 @@ _As a user, I want to delete existing habits so that I can keep my habits up to 
 Personalize a habit with color
 _As a user, I want to assign a specific color to each habit to make it personal to me._
 **Acceptance Criteria:**
-1. Habit edit form includes a color picker.
+1. Habit add form includes a color picker.
 2. Selected color appears in lists and charts.
 3. Color choice persists after app restart.
 **Priority:** Low
@@ -227,7 +210,7 @@ _As a user, I want to assign a specific color to each habit to make it personal 
 **Notes:**
 - Ensure good contrast/accessibility.
 
----
+# 7 — Reports Page
 
 # User Story Template
 **Title:**
@@ -240,20 +223,18 @@ _As a user, I want to see a report of my weekly habit progress so that I can und
 **Priority:** High
 **Story Points:** 3
 **Notes:**
-- Keep charts readable on small screens.
+- Keep data readable on small screens.
 
 # User Story Template
 **Title:**
 Visualize completed habits
 _As a user, I want to see a chart of my completed habits for each day of the week so that I can quickly identify trends in my progress._
 **Acceptance Criteria:**
-1. Chart displays daily completed counts.
-2. Hover or tap shows exact values.
-3. No data shows a friendly placeholder.
+Chart displays daily completed counts.
 **Priority:** Medium
 **Story Points:** 2
 **Notes:**
-- Avoid clutter; label axes clearly.
+- Neat look.
 
 # User Story Template
 **Title:**
@@ -261,14 +242,12 @@ View all habits
 _As a user, I want to see both completed and incomplete habits in my report so that I have a comprehensive view of my habit tracking performance._
 **Acceptance Criteria:**
 1. Report lists both completed and incomplete counts per day.
-2. Filter to show all/completed/incomplete.
-3. Export or share summary (optional).
 **Priority:** Medium
 **Story Points:** 3
 **Notes:**
 - Persist last-used filter.
 
----
+# 8 — Notifications Page
 
 # User Story Template
 **Title:**
@@ -281,7 +260,7 @@ _As a user, I want to be able to enable or disable notifications for the app, so
 **Priority:** Medium
 **Story Points:** 2
 **Notes:**
-- Respect device-level notification permissions.
+- NA.
 
 # User Story Template
 **Title:**
@@ -290,11 +269,10 @@ _As a user, I want to select specific habits to receive notifications for, so th
 **Acceptance Criteria:**
 1. Multi-select list of habits for reminders.
 2. Selected habits clearly shown and saved.
-3. Changes apply without app restart.
 **Priority:** Medium
 **Story Points:** 3
 **Notes:**
-- Consider a quick “select all/none” action.
+- NA.
 
 # User Story Template
 **Title:**
@@ -307,4 +285,4 @@ _As a user, I want to have the option to receive notifications three times a day
 **Priority:** Medium
 **Story Points:** 3
 **Notes:**
-- Handle time zone changes and daylight saving.
+- NA.
