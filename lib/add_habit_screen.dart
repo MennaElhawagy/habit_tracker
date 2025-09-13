@@ -10,6 +10,12 @@ class AddHabitScreen extends StatefulWidget {
   _AddHabitScreenState createState() => _AddHabitScreenState();
 }
 
+// Static variables to hold habit data as fallback
+class HabitData {
+  static Map<String, String> selectedHabits = {};
+  static Map<String, String> completedHabits = {};
+}
+
 class _AddHabitScreenState extends State<AddHabitScreen> {
   final TextEditingController _habitController = TextEditingController();
   Color selectedColor = Colors.amber; // Default color
@@ -45,9 +51,36 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
   }
 
   Future<void> _saveHabits() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('selectedHabitsMap', jsonEncode(selectedHabitsMap));
-    await prefs.setString('completedHabitsMap', jsonEncode(completedHabitsMap));
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      
+      // Clear existing data first
+      await prefs.remove('selectedHabitsMap');
+      await prefs.remove('completedHabitsMap');
+      
+      String selectedJson = jsonEncode(selectedHabitsMap);
+      String completedJson = jsonEncode(completedHabitsMap);
+      
+      print('Saving selectedHabitsMap: $selectedJson');
+      print('Saving completedHabitsMap: $completedJson');
+      
+      bool success1 = await prefs.setString('selectedHabitsMap', selectedJson);
+      bool success2 = await prefs.setString('completedHabitsMap', completedJson);
+      
+      print('Save results: selectedHabitsMap=$success1, completedHabitsMap=$success2');
+      
+      // Force commit changes
+      await prefs.commit();
+      
+      // Double check by reading back
+      String? readBack1 = prefs.getString('selectedHabitsMap');
+      String? readBack2 = prefs.getString('completedHabitsMap');
+      print('Read back - Selected: $readBack1');
+      print('Read back - Completed: $readBack2');
+      
+    } catch (e) {
+      print('Error saving habits: $e');
+    }
   }
 
   @override
@@ -115,17 +148,33 @@ class _AddHabitScreenState extends State<AddHabitScreen> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (_habitController.text.isNotEmpty) {
+                  // Add the new habit to the selectedHabitsMap with the chosen color
+                  String habitName = _habitController.text;
+                  String colorHex = selectedColor.value.toRadixString(16).substring(2); // Remove FF prefix
+                  selectedHabitsMap[habitName] = colorHex;
+                  
+                  // Also update static variables as fallback
+                  HabitData.selectedHabits[habitName] = colorHex;
+                  
+                  print('Adding habit: $habitName with color: $colorHex');
+                  print('Static data updated: ${HabitData.selectedHabits}');
+                  
+                  await _saveHabits();
+                  
                   setState(() {
-                    // Add the new habit to the selectedHabitsMap with the chosen color
-                    selectedHabitsMap[_habitController.text] =
-                        selectedColor.value.toRadixString(16);
                     _habitController.clear();
                     selectedColorName = 'Amber'; // Reset to default
                     selectedColor = _habitColors[selectedColorName]!;
-                    _saveHabits();
                   });
+                  
+                  print('Habit saved successfully: ${selectedHabitsMap.toString()}');
+                  
+                  // Verify it was saved
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  String? saved = prefs.getString('selectedHabitsMap');
+                  print('Verified in storage: $saved');
                 }
               },
               child: Text(

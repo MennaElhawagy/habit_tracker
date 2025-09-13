@@ -29,11 +29,25 @@ class _HabitTrackerScreenState extends State<HabitTrackerScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       name = prefs.getString('name') ?? widget.username;
-      selectedHabitsMap = Map<String, String>.from(
-          jsonDecode(prefs.getString('selectedHabitsMap') ?? '{}'));
-      completedHabitsMap = Map<String, String>.from(
-          jsonDecode(prefs.getString('completedHabitsMap') ?? '{}'));
+      
+      // Try to load from SharedPreferences first
+      String selectedJson = prefs.getString('selectedHabitsMap') ?? '{}';
+      String completedJson = prefs.getString('completedHabitsMap') ?? '{}';
+      
+      selectedHabitsMap = Map<String, String>.from(jsonDecode(selectedJson));
+      completedHabitsMap = Map<String, String>.from(jsonDecode(completedJson));
+      
+      // If SharedPreferences is empty, use static data as fallback
+      if (selectedHabitsMap.isEmpty && HabitData.selectedHabits.isNotEmpty) {
+        selectedHabitsMap = Map<String, String>.from(HabitData.selectedHabits);
+        print('Using static data fallback: ${selectedHabitsMap}');
+      }
+      
+      if (completedHabitsMap.isEmpty && HabitData.completedHabits.isNotEmpty) {
+        completedHabitsMap = Map<String, String>.from(HabitData.completedHabits);
+      }
     });
+    print('Loaded habits: Selected=${selectedHabitsMap.toString()}, Completed=${completedHabitsMap.toString()}');
   }
 
   Future<void> _saveHabits() async {
@@ -197,8 +211,7 @@ class _HabitTrackerScreenState extends State<HabitTrackerScreen> {
           ),
         ],
       ),
-      floatingActionButton: selectedHabitsMap.isEmpty
-          ? FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
             context,
@@ -212,8 +225,7 @@ class _HabitTrackerScreenState extends State<HabitTrackerScreen> {
         child: Icon(Icons.add),
         backgroundColor: Colors.blue.shade700,
         tooltip: 'Add Habits',
-      )
-          : null,
+      ),
     );
   }
 
