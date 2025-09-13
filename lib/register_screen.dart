@@ -19,8 +19,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   double _age = 25; // Default age set to 25
-  String _country = 'United States';
+  String _country = '';
   List<String> _countries = [];
+  bool _isLoadingCountries = true;
   List<String> selectedHabits = [];
   List<String> availableHabits = [
     'Wake Up Early',
@@ -54,11 +55,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Future<void> _loadCountries() async {
     try {
       List<String> countries = await fetchCountries();
+      countries.sort(); // Sort countries alphabetically
       setState(() {
         _countries = countries;
+        _isLoadingCountries = false;
+        // Set default country to United States if available, otherwise first country
+        if (countries.contains('United States of America')) {
+          _country = 'United States of America';
+        } else if (countries.contains('United States')) {
+          _country = 'United States';
+        } else if (countries.isNotEmpty) {
+          _country = countries.first;
+        }
       });
     } catch (e) {
-      // Handle error
+      setState(() {
+        _isLoadingCountries = false;
+        _countries = ['Error loading countries'];
+        _country = 'Error loading countries';
+      });
       _showToast('Error fetching countries');
     }
   }
@@ -81,6 +96,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     if (username.isEmpty || name.isEmpty || password.isEmpty) {
       _showToast('Please fill in all fields');
+      return;
+    }
+
+    if (_country.isEmpty || _country == 'Error loading countries') {
+      _showToast('Please select a country');
       return;
     }
 
@@ -292,23 +312,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(30),
       ),
-      child: DropdownButton<String>(
-        value: _country,
-        icon: Icon(Icons.arrow_drop_down, color: Colors.blue.shade700),
-        isExpanded: true,
-        underline: SizedBox(),
-        items: _countries.map((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
-        onChanged: (newValue) {
-          setState(() {
-            _country = newValue!;
-          });
-        },
-      ),
+      child: _isLoadingCountries
+          ? Container(
+              padding: EdgeInsets.symmetric(vertical: 15),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.blue.shade700),
+                    ),
+                  ),
+                  SizedBox(width: 15),
+                  Text(
+                    'Loading countries...',
+                    style: TextStyle(color: Colors.grey.shade600),
+                  ),
+                ],
+              ),
+            )
+          : DropdownButton<String>(
+              value: _country.isEmpty ? null : _country,
+              hint: Text('Select Country'),
+              icon: Icon(Icons.arrow_drop_down, color: Colors.blue.shade700),
+              isExpanded: true,
+              underline: SizedBox(),
+              items: _countries.map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (newValue) {
+                setState(() {
+                  _country = newValue!;
+                });
+              },
+            ),
     );
   }
 }
