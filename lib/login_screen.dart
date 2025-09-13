@@ -24,12 +24,22 @@ class _LoginScreenState extends State<LoginScreen> {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    // Check against default credentials
-    if (username == defaultUsername && password == defaultPassword) {
-      await prefs.setString('name', 'Test User');
-      await prefs.setString('username', 'testuser');
-      await prefs.setDouble('age', 25);
-      await prefs.setString('country', 'United States');
+    // Get saved credentials
+    final savedUsername = prefs.getString('username');
+    final savedPassword = prefs.getString('password');
+
+    // Check against default credentials or saved credentials
+    if ((username == defaultUsername && password == defaultPassword) ||
+        (username == savedUsername && password == savedPassword)) {
+
+      // If logging in with default credentials, set default user data
+      if (username == defaultUsername && password == defaultPassword) {
+        await prefs.setString('name', 'Test User');
+        await prefs.setString('username', 'testuser');
+        await prefs.setDouble('age', 25);
+        await prefs.setString('country', 'United States');
+      }
+      // If logging in with saved credentials, the data is already there from registration
 
       Navigator.pushReplacement(
         context,
@@ -38,8 +48,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
     } else {
-      //empty out shared preferences
-      await prefs.clear();
       Fluttertoast.showToast(
         msg: "The username or password was incorrect",
         toastLength: Toast.LENGTH_SHORT,

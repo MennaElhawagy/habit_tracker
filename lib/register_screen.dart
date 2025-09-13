@@ -17,6 +17,7 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final _nameController = TextEditingController();
   final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
   double _age = 25; // Default age set to 25
   String _country = 'United States';
   List<String> _countries = [];
@@ -76,8 +77,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void _register() async {
     final name = _nameController.text;
     final username = _usernameController.text;
+    final password = _passwordController.text;
 
-    if (username.isEmpty || name.isEmpty) {
+    if (username.isEmpty || name.isEmpty || password.isEmpty) {
       _showToast('Please fill in all fields');
       return;
     }
@@ -97,6 +99,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     // Save user information and habits to shared preferences.
     await prefs.setString('name', name);
     await prefs.setString('username', username);
+    await prefs.setString('password', password);
     await prefs.setDouble('age', _age);
     await prefs.setString('country', _country);
     await prefs.setString('selectedHabitsMap', jsonEncode(selectedHabitsMap));
@@ -162,6 +165,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 SizedBox(height: 10),
                 _buildInputField(
                     _usernameController, 'Username', Icons.alternate_email),
+                SizedBox(height: 10),
+                _buildPasswordField(_passwordController, 'Password', Icons.lock),
                 SizedBox(height: 10),
                 Text('Age: ${_age.round()}',
                     style: TextStyle(color: Colors.white, fontSize: 18)),
@@ -250,6 +255,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
       child: TextField(
         controller: controller,
+        decoration: InputDecoration(
+          prefixIcon: Icon(icon, color: Colors.blue.shade700),
+          hintText: hint,
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPasswordField(
+      TextEditingController controller, String hint, IconData icon) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: TextField(
+        controller: controller,
+        obscureText: true,
         decoration: InputDecoration(
           prefixIcon: Icon(icon, color: Colors.blue.shade700),
           hintText: hint,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'add_habit_screen.dart';
+import 'detail_screen.dart';
 
 class HabitTrackerScreen extends StatefulWidget {
   final String username;
@@ -81,13 +82,23 @@ class _HabitTrackerScreenState extends State<HabitTrackerScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue.shade700,
-        title: Text(
-          name.isNotEmpty ? name : 'Loading...',
-          style: const TextStyle(
-            fontSize: 24,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+        title: Row(
+          children: [
+            Image.asset(
+              'assets/images/app_icon.png',
+              height: 32,
+              width: 32,
+            ),
+            SizedBox(width: 8),
+            Text(
+              name.isNotEmpty ? name : 'Loading...',
+              style: const TextStyle(
+                fontSize: 24,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
         automaticallyImplyLeading: true,
       ),
@@ -146,7 +157,7 @@ class _HabitTrackerScreenState extends State<HabitTrackerScreen> {
                       ],
                     ),
                   ),
-                  child: _buildHabitCard(habit, habitColor),
+                  child: _buildHabitCard(habit, habitColor, context),
                 );
               },
             ),
@@ -203,7 +214,7 @@ class _HabitTrackerScreenState extends State<HabitTrackerScreen> {
                       ],
                     ),
                   ),
-                  child: _buildHabitCard(habit, habitColor,
+                  child: _buildHabitCard(habit, habitColor, context,
                       isCompleted: true),
                 );
               },
@@ -229,7 +240,7 @@ class _HabitTrackerScreenState extends State<HabitTrackerScreen> {
     );
   }
 
-  Widget _buildHabitCard(String title, Color color,
+  Widget _buildHabitCard(String title, Color color, BuildContext context,
       {bool isCompleted = false}) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
@@ -248,6 +259,17 @@ class _HabitTrackerScreenState extends State<HabitTrackerScreen> {
           trailing: isCompleted
               ? Icon(Icons.check_circle, color: Colors.green, size: 28)
               : null,
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DetailScreen(item: {
+                  'title': title,
+                  'description': 'Details about your $title habit. Track your progress and stay motivated!',
+                }),
+              ),
+            );
+          },
         ),
       ),
     );
