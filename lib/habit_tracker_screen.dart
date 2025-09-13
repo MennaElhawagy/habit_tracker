@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'add_habit_screen.dart';
+import 'detail_screen.dart';
 
 class HabitTrackerScreen extends StatefulWidget {
   final String username;
@@ -217,8 +218,38 @@ class _HabitTrackerScreenState extends State<HabitTrackerScreen> {
           trailing: isCompleted
               ? const Icon(Icons.check_circle, color: Colors.green, size: 28)
               : null,
+          onTap: () {
+            Map<String, dynamic> selectedItem = {
+              'title': title,
+              'description': _getHabitDescription(title),
+            };
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DetailScreen(item: selectedItem),
+              ),
+            );
+          },
         ),
       ),
     );
   }
+
+  String _getHabitDescription(String habitName) {
+    final descriptions = {
+      'Wake Up Early': 'Start your day early to increase productivity and enjoy peaceful morning hours.',
+      'Workout': 'Regular physical exercise to maintain fitness and boost energy levels.',
+      'Drink Water': 'Stay hydrated throughout the day for better health and mental clarity.',
+      'Meditate': 'Practice mindfulness and meditation to reduce stress and improve focus.',
+      'Read a Book': 'Expand your knowledge and imagination through regular reading.',
+      'Practice Gratitude': 'Acknowledge and appreciate the positive aspects of your life.',
+      'Sleep 8 Hours': 'Get adequate rest for physical recovery and mental well-being.',
+      'Eat Healthy': 'Maintain a balanced diet for optimal health and energy.',
+      'Journal': 'Reflect on your thoughts and experiences through writing.',
+      'Walk 10,000 Steps': 'Stay active with daily walking to improve cardiovascular health.',
+    };
+    
+    return descriptions[habitName] ?? 'A positive habit to improve your daily routine and well-being.';
+  }
+
 }
