@@ -1,7 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'add_habit_screen.dart';
-import 'detail_screen.dart';
 
 class HabitTrackerScreen extends StatefulWidget {
   final String username;
@@ -20,10 +22,24 @@ class _HabitTrackerScreenState extends State<HabitTrackerScreen> {
   @override
   void initState() {
     super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      name = prefs.getString('name') ?? widget.username;
+      selectedHabitsMap = Map<String, String>.from(
+          jsonDecode(prefs.getString('selectedHabitsMap') ?? '{}'));
+      completedHabitsMap = Map<String, String>.from(
+          jsonDecode(prefs.getString('completedHabitsMap') ?? '{}'));
+    });
   }
 
   Future<void> _saveHabits() async {
-    //save habits to preferences in the future
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('selectedHabitsMap', jsonEncode(selectedHabitsMap));
+    await prefs.setString('completedHabitsMap', jsonEncode(completedHabitsMap));
   }
 
   Color _getColorFromHex(String hexColor) {
@@ -121,9 +137,9 @@ class _HabitTrackerScreenState extends State<HabitTrackerScreen> {
               },
             ),
           ),
-          const Divider(),
+          Divider(),
           const Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Text(
               'Done ✅🎉',
               style: TextStyle(
@@ -161,7 +177,7 @@ class _HabitTrackerScreenState extends State<HabitTrackerScreen> {
                   background: Container(
                     color: Colors.red,
                     alignment: Alignment.centerLeft,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 20),
                     child: const Row(
                       children: [
                         Icon(Icons.undo, color: Colors.white),
@@ -189,7 +205,9 @@ class _HabitTrackerScreenState extends State<HabitTrackerScreen> {
             MaterialPageRoute(
               builder: (context) => AddHabitScreen(),
             ),
-          );
+          ).then((_) {
+            _loadUserData(); // Reload data after returning
+          });
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.blue.shade700,
@@ -216,40 +234,10 @@ class _HabitTrackerScreenState extends State<HabitTrackerScreen> {
             ),
           ),
           trailing: isCompleted
-              ? const Icon(Icons.check_circle, color: Colors.green, size: 28)
+              ? Icon(Icons.check_circle, color: Colors.green, size: 28)
               : null,
-          onTap: () {
-            Map<String, dynamic> selectedItem = {
-              'title': title,
-              'description': _getHabitDescription(title),
-            };
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => DetailScreen(item: selectedItem),
-              ),
-            );
-          },
         ),
       ),
     );
   }
-
-  String _getHabitDescription(String habitName) {
-    final descriptions = {
-      'Wake Up Early': 'Start your day early to increase productivity and enjoy peaceful morning hours.',
-      'Workout': 'Regular physical exercise to maintain fitness and boost energy levels.',
-      'Drink Water': 'Stay hydrated throughout the day for better health and mental clarity.',
-      'Meditate': 'Practice mindfulness and meditation to reduce stress and improve focus.',
-      'Read a Book': 'Expand your knowledge and imagination through regular reading.',
-      'Practice Gratitude': 'Acknowledge and appreciate the positive aspects of your life.',
-      'Sleep 8 Hours': 'Get adequate rest for physical recovery and mental well-being.',
-      'Eat Healthy': 'Maintain a balanced diet for optimal health and energy.',
-      'Journal': 'Reflect on your thoughts and experiences through writing.',
-      'Walk 10,000 Steps': 'Stay active with daily walking to improve cardiovascular health.',
-    };
-    
-    return descriptions[habitName] ?? 'A positive habit to improve your daily routine and well-being.';
-  }
-
 }
