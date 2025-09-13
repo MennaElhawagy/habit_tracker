@@ -258,7 +258,7 @@ class _HabitTrackerScreenState extends State<HabitTrackerScreen> {
           ),
           trailing: isCompleted
               ? Icon(Icons.check_circle, color: Colors.green, size: 28)
-              : null,
+              : Icon(Icons.arrow_forward_ios, color: Colors.white, size: 20),
           onTap: () {
             Navigator.push(
               context,
